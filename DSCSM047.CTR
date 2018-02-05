@@ -1,0 +1,14 @@
+$SIMULATION_CONTROLS
+
+!-----------------------------------------------------------------------------------------
+*CONTROLS_SWITCH
+@CTRNO DESCRIPTION  
+     2 Summary, evaluate files only
+    
+*CONTROLS
+!-----------------------------------------------------------------------------------------
+@N CONTROLS_TITLE
+ 2 Summary, evaluate files only (VBOSE='0' - zero)
+@N OUTPUTS     FNAME OVVEW SUMRY FROPT GROUT CAOUT WAOUT NIOUT MIOUT DIOUT VBOSE CHOUT OPOUT
+ 2 OU              .     N     Y     .     N     N     N     N     N     N     0     N     N
+

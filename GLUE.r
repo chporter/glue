@@ -29,6 +29,12 @@ WD<-paste(DSSATD, GLUED, sep="");
 OD<-paste(DSSATD, OutputD, sep="");
 GD<-paste(DSSATD, GenotypeD, sep="");
 
+# Copy the DSCSM047.CTR file from the GLUE directory to the GLWork directory
+# this will be used to limit DSSAT outputs to Summary.OUT and Evaluate.OUT
+CTRfile_from <- paste(WD,"DSCSM047.CTR",sep="/")
+CTRfile_to   <- paste(OD,"DSCSM047.CTR",sep="/")
+file.copy(CTRfile_from,CTRfile_to)
+
 eval(parse(text=paste("ModelRunIndicatorPath='",OD,"/ModelRunIndicator.txt'",sep = ''))); 
 ##Path of the model run indicator file, which indicates which component of GLUE is finished so far.
 
