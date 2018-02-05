@@ -54,7 +54,7 @@ newRownames <- SimulationControl[ , 1];
 rownames(SimulationControl) <- newRownames;
 
 NumberOfModelRun<-as.numeric(SimulationControl["NumberOfModelRun", "Value"]);
-write("The number of model run is known...", file = ModelRunIndicatorPath, append = F);
+write(c("The number of model runs = ",NumberOfModelRun), file = ModelRunIndicatorPath, ncolumns=2, append = F);
 
 #print(NumberOfModelRun);
 #Read the number of model running.
@@ -67,17 +67,20 @@ if (GLUEFlag==1)
 {
 StartRoundOfGLUE=1
 TotalRoundOfGLUE=2;
+write("GLUE will run for both phenology and growth.", file = ModelRunIndicatorPath, append = T); 
 } else if (GLUEFlag==2)
 {
 StartRoundOfGLUE=1
 TotalRoundOfGLUE=1;
+write("GLUE will run for phenology only.", file = ModelRunIndicatorPath, append = T); 
 } else
 {
 StartRoundOfGLUE=2
 TotalRoundOfGLUE=2;
+write("GLUE will run for growth only.", file = ModelRunIndicatorPath, append = T); 
 }
 
-write("Which round of GLUE to be done is known...", file = ModelRunIndicatorPath, append = T); 
+#write("Which round of GLUE to be done is known...", file = ModelRunIndicatorPath, append = T); 
 #In default, totally two rounds of GLUE will be conducted. In the first round, only the genetic coefficients (P1, P2, p5, PHINT)
 #that can influence phenology such as anthesis date and maturity date will be estimated, while other parameters (G2, G3)
 #will be fixed at their mean values derived from DSSAT database.In the second round of GLUE, G2 and G3 will be estimated based on the likelihood values derived from growth outputs
@@ -92,7 +95,7 @@ CropNameAddress<-grep('BATCH', BatchFile);
 CropNameStart<-18; #
 CropNameEnd<-19; #
 CropName<-substr(BatchFile[CropNameAddress], CropNameStart, CropNameEnd);
-write("Crop name is known...", file = ModelRunIndicatorPath, append = T);
+write(c("Crop =",CropName), file = ModelRunIndicatorPath, ncolumns=2, append = T);
 #Get the crop name in this model run.
 
 CultivarIDStart<-20; #
@@ -103,7 +106,7 @@ CultivarNameEnd<-nchar(BatchFile[CropNameAddress]); #Get the Cultivar name such 
 
 CultivarID<-substr(BatchFile[CropNameAddress], CultivarIDStart, CultivarIDEnd);
 CultivarName<-substr(BatchFile[CropNameAddress], CultivarNameStart, CultivarNameEnd);
-write("Cultivar ID is known...", file = ModelRunIndicatorPath, append = T);
+write(c("Cultivar ID =",CultivarName), file = ModelRunIndicatorPath, ncolumns=2, append = T);
 #Get the cultivar ID and name.
 
 ## "$BATCH(CULTIVAR):MZIM0003 APPOLO" is an example to show how to get the crop name and cultivar ID. 
@@ -148,7 +151,7 @@ GenotypeFileNameEndPosition<-StringLength-4;
 #while 8 is the length of cultivar file name, such as "MZCER047".
 
 GenotypeFileName<-substr(CurrentGenotypeFile, GenotypeFileNameStartPosition, GenotypeFileNameEndPosition);
-write("Genotype file name is known...", file = ModelRunIndicatorPath, append = T);
+write(c("Genotype file name =",GenotypeFileName), file = ModelRunIndicatorPath, ncolumns=2, append = T);
 #Get the name of the genotype file used currently.
 
 ## (6) Set up batch file.
@@ -158,7 +161,7 @@ write("Genotype file name is known...", file = ModelRunIndicatorPath, append = T
 
 eval(parse(text=paste("source('",WD,"/BatchFileSetUp.r')",sep = '')));
 BatchFileSetUp(WD, OD, CultivarBatchFile);
-write("Batch file is set up...", file = ModelRunIndicatorPath, append = T);
+write(c("DSSAT batch file =",CultivarBatchFile), file = ModelRunIndicatorPath, ncolumns=2, append = T);
 
 #################Step 2: Begin the GLUE procedure.#################
 for (i in StartRoundOfGLUE:TotalRoundOfGLUE)
@@ -194,14 +197,15 @@ ParameterStart<-ParameterAddress+1;
 ParameterEnd<-ParameterAddress+TotalParameterNumber;
 
 ParameterNames<-rownames(ParameterProperty[ParameterStart:ParameterEnd,]);
-write("Parameter properties are know...", file = ModelRunIndicatorPath, append = T);
+ShortParameterNames<-substring(ParameterNames,4,100)
+write(c("Parameters =",ShortParameterNames), file = ModelRunIndicatorPath, ncolumns=100, append = T);
 #Read the maximum and minimum values for each parameter.
 
 ## (2) Generate random values for the paramter set concerned.
 
 eval(parse(text = paste("source('",WD,"/RandomGeneration.r')",sep = '')));
 RandomMatrix<-RandomGeneration(WD, GD, CropName, CultivarID, GenotypeFileName, ParameterProperty, ParameterAddress, TotalParameterNumber, NumberOfModelRun, RoundOfGLUE, GLUEFlag);
-write("Random parameter sets are generated...", file = ModelRunIndicatorPath, append = T);
+write("Random parameter sets have been generated...", file = ModelRunIndicatorPath, append = T);
 write("Model runs are starting...", file = ModelRunIndicatorPath, append = T);
 
 ## (3) Create new genotype files with the generated parameter sets and run the DSSAT model with them.
@@ -214,7 +218,7 @@ write("Likelihood calculation is starting...", file = ModelRunIndicatorPath, app
 eval(parse(text = paste("source('",WD,"/LikelihoodCalculation.r')",sep = '')));
 LikelihoodCalculation(WD, OD, CropName, ParameterNames, RoundOfGLUE);
 write("Likelihood calculation is finished...", file = ModelRunIndicatorPath, append = T);
-write("Posterior distribution is starting to be derived...", file = ModelRunIndicatorPath, append = T);
+write("Starting calculation of posterior distribution...", file = ModelRunIndicatorPath, append = T);
 
 ## (5) Derivation of posterior distribution.
 eval(parse(text = paste("source('",WD,"/PosteriorDistribution.r')",sep = '')));
