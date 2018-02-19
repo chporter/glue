@@ -38,6 +38,9 @@ file.copy(CTRfile_from,CTRfile_to)
 eval(parse(text=paste("ModelRunIndicatorPath='",OD,"/ModelRunIndicator.txt'",sep = ''))); 
 ##Path of the model run indicator file, which indicates which component of GLUE is finished so far.
 
+
+eval(parse(text=paste("GeneratedCultivar='",OD,"/GeneratedCultivar.txt'",sep = ''))); 
+
 ##WD represents working directory. This is very important, because it is used to tell the main funtion where
 ##the sub-functions are. DSSATD represents the DSSAT directory. GLUED represents the GLUE directory.
 ##OutputD represents the output directory under DSSAT, while OD means the final output directory.
@@ -147,7 +150,7 @@ CurrentGenotypeFile<-paste(GD, "/RICER047.CUL", sep="");
 StringLength<-nchar(CurrentGenotypeFile);
 GenotypeFileNameStartPosition<-(StringLength-(8+4)+1);
 GenotypeFileNameEndPosition<-StringLength-4;
-#Where 4 is the lenght of character ".CUL", 
+#Where 4 is the length of character ".CUL", 
 #while 8 is the length of cultivar file name, such as "MZCER047".
 
 GenotypeFileName<-substr(CurrentGenotypeFile, GenotypeFileNameStartPosition, GenotypeFileNameEndPosition);
@@ -210,7 +213,7 @@ write("Model runs are starting...", file = ModelRunIndicatorPath, append = T);
 
 ## (3) Create new genotype files with the generated parameter sets and run the DSSAT model with them.
 eval(parse(text = paste("source('",WD,"/ModelRun.r')",sep = '')));
-ModelRun(WD, OD, DSSATD, GD, CropName, GenotypeFileName, CultivarID, RoundOfGLUE, TotalParameterNumber, NumberOfModelRun, RandomMatrix);
+ModelRun(WD, OD, DSSATD, GD, CropName, GenotypeFileName, CultivarID, RoundOfGLUE, TotalParameterNumber, NumberOfModelRun, RandomMatrix, GeneratedCultivar);
 write("Model run is finished...", file = ModelRunIndicatorPath, append = T);
 write("Likelihood calculation is starting...", file = ModelRunIndicatorPath, append = T);
 

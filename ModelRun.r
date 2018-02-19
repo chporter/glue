@@ -1,5 +1,5 @@
 ##This is the function to run the DSSAT model.
-ModelRun<-function(WD, OD, DSSATD, GD, CropName, GenotypeFileName, CultivarID, RoundOfGLUE, TotalParameterNumber, NumberOfModelRun, RandomMatrix)
+ModelRun<-function(WD, OD, DSSATD, GD, CropName, GenotypeFileName, CultivarID, RoundOfGLUE, TotalParameterNumber, NumberOfModelRun, RandomMatrix, GeneratedCultivar)
 {
   eval(parse(text = paste("write('',file='",OD,"/Evaluate_output.txt')",sep = '')));
   #Empty the Evaluate_output.txt file so as to save new data in Evaluate file in each model run.
@@ -41,7 +41,7 @@ write(Indicator, file = ModelRunIndicatorPath, append = T);
 
 ModelRunNumber<-i;#Dtermine the number of model run.
 eval(parse(text = paste("source('",WD,"/GenotypeChange.r')",sep = '')));#Tell the location of the function.
-GenotypeChange(GD, DSSATD, OD, CropName, GenotypeFileName, CultivarID, TotalParameterNumber, ModelRunNumber, RandomMatrix); #Change the genotype file.
+GenotypeChange(GD, DSSATD, OD, CropName, GenotypeFileName, CultivarID, TotalParameterNumber, ModelRunNumber, RandomMatrix, GeneratedCultivar); #Change the genotype file.
 
 setwd(OD);
 #Set the path for program to call the bath file running.

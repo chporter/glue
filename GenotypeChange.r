@@ -1,6 +1,6 @@
 #Change the genotype file of crops in DSSAT.
 
-GenotypeChange<-function(GD, DSSATD, OD, CropName, GenotypeFileName, CultivarID, TotalParameterNumber, RunNumber, RandomMatrix)
+GenotypeChange<-function(GD, DSSATD, OD, CropName, GenotypeFileName, CultivarID, TotalParameterNumber, RunNumber, RandomMatrix, GeneratedCultivar)
 {
 eval(parse(text=paste('GenotypeFilePath="',GD,'/',GenotypeFileName,'.CUL"',sep = '')));
 
@@ -96,6 +96,12 @@ if (CropName != "SC")
 
   GenotypeFile[LineNumber]<-OldLine;#Replace the old line with new generated line in the Genotype file.
   
+  
+  #temporarily write to a file to save
+  write(OldLine, file = GeneratedCultivar, append = T)
+
+  
+    
   eval(parse(text=paste('ECOFilePath="',GD,'/SCCAN047.ECO"',sep = '')));
   ReadLine<-readLines(ECOFilePath, n=-1)
   ECOFile<-as.character(ReadLine);
