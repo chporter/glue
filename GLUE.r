@@ -29,6 +29,8 @@ WD<-paste(DSSATD, GLUED, sep="");
 OD<-paste(DSSATD, OutputD, sep="");
 GD<-paste(DSSATD, GenotypeD, sep="");
 
+write("Generated Cultivar Parameters",file="C:/DSSAT47/GLWork/CultivarParams.txt",append=F)
+
 # Copy the DSCSM047.CTR file from the GLUE directory to the GLWork directory
 # this will be used to limit DSSAT outputs to Summary.OUT and Evaluate.OUT
 CTRfile_from <- paste(WD,"DSCSM047.CTR",sep="/")
@@ -211,11 +213,18 @@ RandomMatrix<-RandomGeneration(WD, GD, CropName, CultivarID, GenotypeFileName, P
 write("Random parameter sets have been generated...", file = ModelRunIndicatorPath, append = T);
 write("Model runs are starting...", file = ModelRunIndicatorPath, append = T);
 
+#################################################################
+######### Run the Model #########################################
+
 ## (3) Create new genotype files with the generated parameter sets and run the DSSAT model with them.
 eval(parse(text = paste("source('",WD,"/ModelRun.r')",sep = '')));
-ModelRun(WD, OD, DSSATD, GD, CropName, GenotypeFileName, CultivarID, RoundOfGLUE, TotalParameterNumber, NumberOfModelRun, RandomMatrix, GeneratedCultivar);
-write("Model run is finished...", file = ModelRunIndicatorPath, append = T);
+ModelRun(WD, OD, DSSATD, GD, CropName, GenotypeFileName, CultivarID, RoundOfGLUE, TotalParameterNumber, NumberOfModelRun, RandomMatrix);
+write("Model run is finished...", file = ModelRunIndicatorPath, append = T)
+
 write("Likelihood calculation is starting...", file = ModelRunIndicatorPath, append = T);
+
+#################################################################
+#################################################################
 
 ## (4) Calculate the likelihood values for each parameter set.
 eval(parse(text = paste("source('",WD,"/LikelihoodCalculation.r')",sep = '')));

@@ -1,6 +1,6 @@
 #Change the genotype file of crops in DSSAT.
 
-GenotypeChange<-function(GD, DSSATD, OD, CropName, GenotypeFileName, CultivarID, TotalParameterNumber, RunNumber, RandomMatrix, GeneratedCultivar)
+GenotypeChange<-function(GD, DSSATD, OD, CropName, GenotypeFileName, CultivarID, TotalParameterNumber, RunNumber, RandomMatrix)
 {
 eval(parse(text=paste('GenotypeFilePath="',GD,'/',GenotypeFileName,'.CUL"',sep = '')));
 
@@ -8,7 +8,7 @@ ReadLine<-readLines(GenotypeFilePath, n=-1)
 GenotypeFile<-as.character(ReadLine); #Get the genotype file saved as a template.
 
 LineNumber<-grep(pattern=CultivarID, GenotypeFile); #Get the number of the line where the cultivar "GLUECUL" is located.
-OldLine<-GenotypeFile[LineNumber];#Get the line according to the line number.
+NewCulParams<-GenotypeFile[LineNumber];#Get the line according to the line number.
 
 R<-RunNumber;#Get what parameter set will be used to change the genotype file.
 
@@ -48,10 +48,12 @@ if (CropName != "SC")
   ParameterFormat<-sprintf('%3.1f', Parameter);
   }
 
-  substr(OldLine, ValuePosition1, ValuePosition2)<-ParameterFormat;
+  substr(NewCulParams, ValuePosition1, ValuePosition2)<-ParameterFormat;
   }
 
-  GenotypeFile[LineNumber]<-OldLine;#Replace the old line with new generated line in the Genotype file.
+  GenotypeFile[LineNumber]<-NewCulParams;#Replace the old line with new generated line in the Genotype file.
+  
+
 } else
 {
   ParameterStep<-15;
@@ -89,19 +91,14 @@ if (CropName != "SC")
   #print(ParameterFormat);
   #print (" ");
   
-  substr(OldLine, ValuePosition1, ValuePosition2)<-'      ';# Delete initial values.
-  substr(OldLine, ValuePosition1, ValuePosition2)<-ParameterFormat;
+  substr(NewCulParams, ValuePosition1, ValuePosition2)<-'      ';# Delete initial values.
+  substr(NewCulParams, ValuePosition1, ValuePosition2)<-ParameterFormat;
   
  }
 
-  GenotypeFile[LineNumber]<-OldLine;#Replace the old line with new generated line in the Genotype file.
+  GenotypeFile[LineNumber]<-NewCulParams; #Replace the old line with new generated line in the Genotype file.
   
   
-  #temporarily write to a file to save
-  write(OldLine, file = GeneratedCultivar, append = T)
-
-  
-    
   eval(parse(text=paste('ECOFilePath="',GD,'/SCCAN047.ECO"',sep = '')));
   ReadLine<-readLines(ECOFilePath, n=-1)
   ECOFile<-as.character(ReadLine);
@@ -114,10 +111,12 @@ if (CropName != "SC")
                                                    
 eval(parse(text=paste("NewGenotypeFilePath='",OD,"/",GenotypeFileName,".CUL'",sep = '')));
 write(GenotypeFile, file=NewGenotypeFilePath);
-#Save the new genotype file as "cul" file in the GLWork directory.
+
+
+## temporary chp - write parameter string (as written to cultivar file) to a file.
+write(NewCulParams, file="C:/DSSAT47/GLWork/CultivarParams.txt",append=T)
 
 }
-
 
 
 

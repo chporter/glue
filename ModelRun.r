@@ -1,5 +1,5 @@
 ##This is the function to run the DSSAT model.
-ModelRun<-function(WD, OD, DSSATD, GD, CropName, GenotypeFileName, CultivarID, RoundOfGLUE, TotalParameterNumber, NumberOfModelRun, RandomMatrix, GeneratedCultivar)
+ModelRun<-function(WD, OD, DSSATD, GD, CropName, GenotypeFileName, CultivarID, RoundOfGLUE, TotalParameterNumber, NumberOfModelRun, RandomMatrix)
 {
   eval(parse(text = paste("write('',file='",OD,"/Evaluate_output.txt')",sep = '')));
   #Empty the Evaluate_output.txt file so as to save new data in Evaluate file in each model run.
@@ -39,15 +39,15 @@ write(Indicator, file = ModelRunIndicatorPath, append = T);
 write(Indicator, file = ModelRunIndicatorPath, append = T);
 }
 
-ModelRunNumber<-i;#Dtermine the number of model run.
-eval(parse(text = paste("source('",WD,"/GenotypeChange.r')",sep = '')));#Tell the location of the function.
-GenotypeChange(GD, DSSATD, OD, CropName, GenotypeFileName, CultivarID, TotalParameterNumber, ModelRunNumber, RandomMatrix, GeneratedCultivar); #Change the genotype file.
+ModelRunNumber<-i;   #Determine the number of model run.
+eval(parse(text = paste("source('",WD,"/GenotypeChange.r')",sep = ''))); #Tell the location of the function.
+GenotypeChange(GD, DSSATD, OD, CropName, GenotypeFileName, CultivarID, TotalParameterNumber, ModelRunNumber, RandomMatrix); #Change the genotype file.
 
 setwd(OD);
 #Set the path for program to call the bath file running.
 
-BatchCommand <- paste(DSSATD,"/DSCSM047.EXE B ","DSSBatch.v47 DSCSM047.CTR",sep = '')
-eval(parse(text = paste("system('",BatchCommand,"')",sep = '')));
+
+eval(parse(text = paste("system('",DSSATD,"/DSCSM047.EXE B ",OD,"/DSSBatch.v47 DSCSM047.CTR')",sep = '')));
 #Call the batch file to run the model.
 
 if (CropName != "CS")
